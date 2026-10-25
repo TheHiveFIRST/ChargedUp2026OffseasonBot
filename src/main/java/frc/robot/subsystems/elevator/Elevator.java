@@ -1,4 +1,6 @@
-package frc.robot.subsystems.shooter;
+
+
+package frc.robot.subsystems.elevator;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
@@ -10,57 +12,56 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.intake.RollerConfig;
-import frc.robot.subsystems.intake.RollerConstants;
-import frc.robot.subsystems.intake.RollerConfig.ArmConfig;
-import frc.robot.subsystems.intake.RollerConstants.ArmConstants;
 
-public class Pivot extends SubsystemBase {
-  private final SparkMax mPivotLeader;
-  private final SparkMax mPivotFollower;
-  private final AbsoluteEncoder mPivotFollowerEncoder;
+import frc.robot.subsystems.roller.RollerConstants;
+
+
+public class Elevator extends SubsystemBase {
+  private final SparkMax mElevatorLeader;
+  private final SparkMax mElevatorFollower;
+  private final AbsoluteEncoder mElevatorFollowerEncoder;
   private final AbsoluteEncoder mPivotLeaderEncoder;
   private final PIDController mPivotLeaderPID;
-  private final PIDController mPivotFollowerPID;
+  private final PIDController mElevatorFollowerPID;
 
   public double mPivotOutputPower = 0;
   
-  private double mCurrentTarget = RollerConstants.ArmConstants.PIVOT_IN;
+  private double mCurrentTarget = ElevatorConstants.PIVOT_IN;
   private boolean mIntakeGroundSecondStage = false;
 
-  public Pivot() {
-    mPivotLeader = new SparkMax(RollerConstants.ArmConstants.ARM_LEADER_ID, MotorType.kBrushless);
-    mPivotFollower =
-        new SparkMax(RollerConstants.ArmConstants.ARM_FOLLOWER_ID, MotorType.kBrushless);
+  public Elevator() {
+    mElevatorLeader = new SparkMax(ElevatorConstants.ARM_LEADER_ID, MotorType.kBrushless);
+    mElevatorFollower =
+        new SparkMax(ElevatorConstants.ARM_FOLLOWER_ID, MotorType.kBrushless);
 
     // Applying configuration
-    mPivotLeader.configure(
-        RollerConfig.ArmConfig.pivotLeaderConfig,
+    mElevatorLeader.configure(
+        ElevatorConfig.elevatorLeaderConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-    mPivotFollower.configure(
-        RollerConfig.ArmConfig.pivotFollowerConfig,
+    mElevatorFollower.configure(
+        ElevatorConfig.elevatorFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    mPivotFollowerEncoder = mPivotFollower.getAbsoluteEncoder();
-    mPivotLeaderEncoder = mPivotLeader.getAbsoluteEncoder();
+    mElevatorFollowerEncoder = mElevatorFollower.getAbsoluteEncoder();
+    mPivotLeaderEncoder = mElevatorLeader.getAbsoluteEncoder();
 
     // PID constants for arm
-    mPivotFollowerPID =
+    mElevatorFollowerPID =
         new PIDController(
-            RollerConstants.ArmConstants.ARM_KP,
-            RollerConstants.ArmConstants.ARM_KI,
-            RollerConstants.ArmConstants.ARM_KD);
+            ElevatorConstants.ELEVATOR_KP,
+            ElevatorConstants.ELEVATOR_KI,
+            ElevatorConstants.ELEVATOR_KD);
 
     mPivotLeaderPID =
         new PIDController(
-            RollerConstants.ArmConstants.ARM_KP,
-            RollerConstants.ArmConstants.ARM_KI,
-            RollerConstants.ArmConstants.ARM_KD);
+            ElevatorConstants.ELEVATOR_KP,
+            ElevatorConstants.ELEVATOR_KI,
+            ElevatorConstants.ELEVATOR_KD);
 
-    mPivotLeaderPID.setTolerance(RollerConstants.ArmConstants.POSITION_TOLERANCE);
-    mPivotFollowerPID.setTolerance(RollerConstants.ArmConstants.POSITION_TOLERANCE);
+    mPivotLeaderPID.setTolerance(ElevatorConstants.POSITION_TOLERANCE);
+    mElevatorFollowerPID.setTolerance(ElevatorConstants.POSITION_TOLERANCE);
   }
   // Methods
   /**
@@ -72,9 +73,9 @@ public class Pivot extends SubsystemBase {
     mCurrentTarget = position;
     // Use the field mPivotOutputPower (avoid shadowing a local variable)
     mPivotOutputPower =
-        mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
-    mPivotFollower.set(mPivotOutputPower);
-    mPivotLeader.set(mPivotOutputPower);
+        mElevatorFollowerPID.calculate(mElevatorFollowerEncoder.getPosition(), mCurrentTarget);
+    mElevatorFollower.set(mPivotOutputPower);
+    mElevatorLeader.set(mPivotOutputPower);
   }
 
   /**
@@ -83,8 +84,8 @@ public class Pivot extends SubsystemBase {
    * @param pivotPower motor power in range [-1.0, 1.0]
    */
   public void setArmPower(double pivotPower) {
-    mPivotLeader.set(pivotPower);
-    mPivotFollower.set(pivotPower);
+    mElevatorLeader.set(pivotPower);
+    mElevatorFollower.set(pivotPower);
   }
 
   /**
@@ -93,7 +94,7 @@ public class Pivot extends SubsystemBase {
    * @return encoder position
    */
   public double getEncoderValue() {
-    return mPivotFollowerEncoder.getPosition();
+    return mElevatorFollowerEncoder.getPosition();
   }
 
   /**
@@ -107,7 +108,7 @@ public class Pivot extends SubsystemBase {
 
   /** Stop the arm motors and hold current position by updating the target. */
   public void stopArm() {
-    mPivotLeader.set(0);
+    mElevatorLeader.set(0);
     mCurrentTarget = mPivotLeaderEncoder.getPosition(); // Hold current spot
   }
 
@@ -126,7 +127,7 @@ public class Pivot extends SubsystemBase {
     return run(
         () -> {
           if (getEncoderValue() < 0.7) {
-            setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_OUT);
+            setTargetArmPosition(ElevatorConstants.PIVOT_OUT);
           } else {
             setArmPower(0);
           }
@@ -136,21 +137,21 @@ public class Pivot extends SubsystemBase {
   public Command runIntakePivotBumpCommand() {
     return run(
         () -> {
-          setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_BUMP);
+          setTargetArmPosition(ElevatorConstants.PIVOT_BUMP);
         });
   }
 
   public Command runIntakePivotInCommand() {
     return run(
         () -> {
-          setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_IN);
+          setTargetArmPosition(ElevatorConstants.PIVOT_IN);
         });
   }
 
   public Command IntakeSlightlyUpCommand() {
     return run(
         () -> {
-          setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_AGITATE);
+          setTargetArmPosition(ElevatorConstants.PIVOT_AGITATE);
         });
   }
 

@@ -7,9 +7,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GameObjectConstants;
-import frc.robot.subsystems.intake.Roller;
-import frc.robot.subsystems.shooter.Elevator;
-import frc.robot.subsystems.shooter.Elevator;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.roller.Roller;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;

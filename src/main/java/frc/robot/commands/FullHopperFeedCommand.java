@@ -2,8 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.intake.Roller;
-import frc.robot.subsystems.shooter.Elevator;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.roller.Roller;
 
 /**
  * Agitates hard for a burst to clear a full hopper, then transitions into the lighter,
