@@ -5,7 +5,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 // TODO: add comments
-public class IntakeConfig {
+public class RollerConfig {
   // Intake motor config
   public static final SparkFlexConfig intakeMotorConfig = new SparkFlexConfig();
 

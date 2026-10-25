@@ -3,7 +3,7 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public final class ShooterConfig {
+public final class ElevatorConfig {
   public static final SparkMaxConfig shooterLeaderConfig = new SparkMaxConfig();
   public static final SparkMaxConfig shooterFollowerConfig = new SparkMaxConfig();
   public static final SparkMaxConfig shooterFeederLeaderConfig = new SparkMaxConfig();

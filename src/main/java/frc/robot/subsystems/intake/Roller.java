@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Intake extends SubsystemBase {
+public class Roller extends SubsystemBase {
   private final SparkFlex mIntakeMotor;
 
   // TODO: ADD comments
-  public Intake() {
-    mIntakeMotor = new SparkFlex(IntakeConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+  public Roller() {
+    mIntakeMotor = new SparkFlex(RollerConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
 
     mIntakeMotor.configure(
-        IntakeConfig.intakeMotorConfig,
+        RollerConfig.intakeMotorConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -32,15 +32,15 @@ public class Intake extends SubsystemBase {
 
   // Command factories
   public Command runIntakeForwardCommand() {
-    return Commands.run(() -> runIntake(IntakeConstants.INTAKE_SPEED), this);
+    return Commands.run(() -> runIntake(RollerConstants.INTAKE_SPEED), this);
   }
 
   public Command runIntakeSlowCommand() {
-    return Commands.run(() -> runIntake(IntakeConstants.SLOW_INTAKE_SPEED), this);
+    return Commands.run(() -> runIntake(RollerConstants.SLOW_INTAKE_SPEED), this);
   }
 
   public Command runOuttakeCommand() {
-    return Commands.run(() -> runIntake(IntakeConstants.OUTTAKE_SPEED), this);
+    return Commands.run(() -> runIntake(RollerConstants.OUTTAKE_SPEED), this);
   }
 
   public Command stopIntakeCommand() {

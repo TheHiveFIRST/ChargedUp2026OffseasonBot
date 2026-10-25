@@ -40,9 +40,9 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  private final Shooter shooter;
-  private final Intake intake;
-  private final Pivot pivot;
+  private final Elevator elevator;
+  private final Roller intake;
+  
   private SwerveDriveSimulation driveSimulation = null;
 
   // Controller
@@ -71,9 +71,9 @@ public class RobotContainer {
                 new VisionIOLimelight(camera0Name, drive::getRotation),
                 new VisionIOLimelight(camera1Name, drive::getRotation));
 
-        shooter = new Shooter(ShootCommands.hubDistanceSupplier(drive));
-        intake = new Intake();
-        pivot = new Pivot();
+        elevator = new Elevator();
+        intake = new Roller();
+        
         break;
 
       case SIM:
@@ -100,9 +100,8 @@ public class RobotContainer {
                     camera0Name, robotToCamera0, driveSimulation::getSimulatedDriveTrainPose),
                 new VisionIOPhotonVisionSim(
                     camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
-        shooter = new Shooter(ShootCommands.hubDistanceSupplier(drive)); // TODO: switch the sim
-        intake = new Intake();
-        pivot = new Pivot();
+        intake = new Roller();
+        elevator = new Elevator();
         break;
 
       default:
@@ -116,9 +115,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 (pose) -> {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Shooter(ShootCommands.hubDistanceSupplier(drive));
-        intake = new Intake();
-        pivot = new Pivot();
+        
+        intake = new Roller();
+        elevator = new Elevator();
         break;
     }
 
@@ -162,9 +161,9 @@ public class RobotContainer {
 
     // Idle defaults so releasing a button returns mechanisms to a safe resting state instead of
     // holding their last commanded output.
-    shooter.setDefaultCommand(Commands.run(shooter::stopShooterKicker, shooter));
+    elevator.setDefaultCommand(Commands.run(elevator::runIntakePivotGroundCommand, elevator));
     intake.setDefaultCommand(Commands.run(intake::stopIntake, intake));
-    pivot.setDefaultCommand(pivot.runIntakePivotGroundCommand());
+    
 
     // --- Reference: original AdvantageKit template bindings, superseded by the driver controls
     // below (a/x/b/y are rebound to shooter/intake controls now). Left here for reference.
@@ -223,40 +222,40 @@ public class RobotContainer {
     // Hold to auto-aim the drivetrain at the hub and shoot continuously: RPM is recomputed every
     // loop from live odometry distance, the kicker waits for isAtSpeed() before feeding, and the
     // hopper feed transitions from a full-hopper agitation burst into half-hopper repeats.
-    driverController
+    /*driverController
         .rightTrigger()
         .whileTrue(
             ShootCommands.autoAimAndShootCommand(
                 drive,
-                shooter,
+                elevator,
                 pivot,
                 intake,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX()));
-
+*/
     // Hold to extend the pivot out and run the intake roller forward.
-    driverController.leftTrigger(0.2).whileTrue(new IntakeDeployCommand(pivot, intake));
+    //driverController.leftTrigger(0.2).whileTrue(new IntakeDeployCommand(pivot, intake));
 
     // Manual force-fire: spin up and feed immediately, bypassing the at-speed gate, for use if
     // the distance-based target RPM can't be trusted.
-    driverController.rightBumper().whileTrue(shooter.shootManualCommand());
+    //driverController.rightBumper().whileTrue(elevator.shootManualCommand());
 
-    driverController.leftBumper().whileTrue(pivot.runIntakePivotBumpCommand());
+    //driverController.leftBumper().whileTrue(pivot.runIntakePivotBumpCommand());
     // other intake button
     driverController.x().whileTrue(intake.runIntakeForwardCommand());
     driverController.b().onTrue(intake.runOuttakeCommand());
-    driverController.y().whileTrue(shooter.toggleShooterCommand());
-    driverController.a().onTrue(shooter.toggleDistanceEstimationCommand());
+    //driverController.y().whileTrue(elevator.toggleShooterCommand());
+    //driverController.a().onTrue(elevator.toggleDistanceEstimationCommand());
 
     // OPERATOR CONTROLS
-    operatorController.y().whileTrue(shooter.toggleShooterCommand());
-    operatorController.leftTrigger().onTrue(shooter.toggleKinematicsEstimationCommand());
-    operatorController.rightTrigger().onTrue(shooter.setLadderShotCommand());
-    operatorController.b().onTrue(shooter.setHubShotCommand());
-    operatorController.a().onTrue(shooter.setTrenchShotCommand());
-    operatorController.x().onTrue(shooter.toggleDistanceEstimationCommand());
-    operatorController.rightBumper().onTrue(shooter.increaseShootingRPMOffsetCommand());
-    operatorController.leftBumper().onTrue(shooter.decreaseShootingRPMOffsetCommand());
+    //operatorController.y().whileTrue(elevator.toggleShooterCommand());
+    //operatorController.leftTrigger().onTrue(elevator.toggleKinematicsEstimationCommand());
+    //operatorController.rightTrigger().onTrue(elevator.setLadderShotCommand());
+    //operatorController.b().onTrue(elevator.setHubShotCommand());
+    //operatorController.a().onTrue(elevator.setTrenchShotCommand());
+    //operatorController.x().onTrue(elevator.toggleDistanceEstimationCommand());
+    //operatorController.rightBumper().onTrue(elevator.increaseShootingRPMOffsetCommand());
+    //operatorController.leftBumper().onTrue(elevator.decreaseShootingRPMOffsetCommand());
   }
 
   /**

@@ -3,7 +3,7 @@ package frc.robot.subsystems.intake;
 
 // TODO: add comments
 
-public final class IntakeConstants {
+public final class RollerConstants {
 
   // Intake motor constants
   public static final int INTAKE_MOTOR_ID = 20;

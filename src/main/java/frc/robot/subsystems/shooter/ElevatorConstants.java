@@ -1,6 +1,6 @@
 package frc.robot.subsystems.shooter;
 
-public final class ShooterConstants {
+public final class ElevatorConstants {
   public static final int SHOOTER_LEADER_CANID = 14;
   public static final int SHOOTER_FOLLOWER_CANID = 15;
   public static final int SHOOTER_FEEDER_LEADER_CANID = 16;

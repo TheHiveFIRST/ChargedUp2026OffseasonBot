@@ -7,9 +7,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GameObjectConstants;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.Pivot;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.intake.Roller;
+import frc.robot.subsystems.shooter.Elevator;
+import frc.robot.subsystems.shooter.Elevator;
+
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -42,16 +43,5 @@ public class ShootCommands {
    * continuously spins up + feeds the shooter (regression RPM updates live from odometry) along
    * with agitating the hopper to feed balls in. Intended for a whileTrue binding.
    */
-  public static Command autoAimAndShootCommand(
-      Drive drive,
-      Shooter shooter,
-      Pivot pivot,
-      Intake intake,
-      DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier) {
-    return Commands.parallel(
-        DriveCommands.joystickDriveAtAngle(drive, xSupplier, ySupplier, hubHeadingSupplier(drive)),
-        shooter.shootWhileHeldCommand(),
-        new FullHopperFeedCommand(pivot, intake));
-  }
+  
 }

@@ -2,13 +2,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.Pivot;
+import frc.robot.subsystems.intake.Roller;
+import frc.robot.subsystems.shooter.Elevator;
 
 /** Repeatedly bumps the pivot to walk balls up the hopper while the intake feeds them in. */
 public class HalfHopperFeedCommand extends SequentialCommandGroup {
 
-  public HalfHopperFeedCommand(Pivot pivot, Intake intake) {
+  public HalfHopperFeedCommand(Elevator pivot, Roller intake) {
     addCommands(
         new SequentialCommandGroup(
                 pivot.runIntakePivotBumpCommand().withTimeout(0.3),

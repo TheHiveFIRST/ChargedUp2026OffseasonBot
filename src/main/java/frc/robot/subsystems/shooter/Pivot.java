@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+package frc.robot.subsystems.shooter;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.intake.RollerConfig;
+import frc.robot.subsystems.intake.RollerConstants;
+import frc.robot.subsystems.intake.RollerConfig.ArmConfig;
+import frc.robot.subsystems.intake.RollerConstants.ArmConstants;
 
 public class Pivot extends SubsystemBase {
   private final SparkMax mPivotLeader;
@@ -20,22 +24,22 @@ public class Pivot extends SubsystemBase {
   private final PIDController mPivotFollowerPID;
 
   public double mPivotOutputPower = 0;
-  private double mArmCurrentKP = IntakeConstants.ArmConstants.ARM_KP;
-  private double mCurrentTarget = IntakeConstants.ArmConstants.PIVOT_IN;
+  
+  private double mCurrentTarget = RollerConstants.ArmConstants.PIVOT_IN;
   private boolean mIntakeGroundSecondStage = false;
 
   public Pivot() {
-    mPivotLeader = new SparkMax(IntakeConstants.ArmConstants.ARM_LEADER_ID, MotorType.kBrushless);
+    mPivotLeader = new SparkMax(RollerConstants.ArmConstants.ARM_LEADER_ID, MotorType.kBrushless);
     mPivotFollower =
-        new SparkMax(IntakeConstants.ArmConstants.ARM_FOLLOWER_ID, MotorType.kBrushless);
+        new SparkMax(RollerConstants.ArmConstants.ARM_FOLLOWER_ID, MotorType.kBrushless);
 
     // Applying configuration
     mPivotLeader.configure(
-        IntakeConfig.ArmConfig.pivotLeaderConfig,
+        RollerConfig.ArmConfig.pivotLeaderConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     mPivotFollower.configure(
-        IntakeConfig.ArmConfig.pivotFollowerConfig,
+        RollerConfig.ArmConfig.pivotFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -45,18 +49,18 @@ public class Pivot extends SubsystemBase {
     // PID constants for arm
     mPivotFollowerPID =
         new PIDController(
-            IntakeConstants.ArmConstants.ARM_KP,
-            IntakeConstants.ArmConstants.ARM_KI,
-            IntakeConstants.ArmConstants.ARM_KD);
+            RollerConstants.ArmConstants.ARM_KP,
+            RollerConstants.ArmConstants.ARM_KI,
+            RollerConstants.ArmConstants.ARM_KD);
 
     mPivotLeaderPID =
         new PIDController(
-            IntakeConstants.ArmConstants.ARM_KP,
-            IntakeConstants.ArmConstants.ARM_KI,
-            IntakeConstants.ArmConstants.ARM_KD);
+            RollerConstants.ArmConstants.ARM_KP,
+            RollerConstants.ArmConstants.ARM_KI,
+            RollerConstants.ArmConstants.ARM_KD);
 
-    mPivotLeaderPID.setTolerance(IntakeConstants.ArmConstants.POSITION_TOLERANCE);
-    mPivotFollowerPID.setTolerance(IntakeConstants.ArmConstants.POSITION_TOLERANCE);
+    mPivotLeaderPID.setTolerance(RollerConstants.ArmConstants.POSITION_TOLERANCE);
+    mPivotFollowerPID.setTolerance(RollerConstants.ArmConstants.POSITION_TOLERANCE);
   }
   // Methods
   /**
@@ -108,14 +112,7 @@ public class Pivot extends SubsystemBase {
   }
 
   /** Increase the internal KP tuning value by the configured increment. */
-  public void incrementKP() {
-    mArmCurrentKP += IntakeConstants.ArmConstants.ARM_KP_INCREMENT;
-  }
-
-  /** Decrease the internal KP tuning value by the configured increment. */
-  public void decrementKP() {
-    mArmCurrentKP -= IntakeConstants.ArmConstants.ARM_KP_INCREMENT;
-  }
+  
 
   // Commands
   public Command IntakeToPositionCommand(double position) {
@@ -129,7 +126,7 @@ public class Pivot extends SubsystemBase {
     return run(
         () -> {
           if (getEncoderValue() < 0.7) {
-            setTargetArmPosition(IntakeConstants.ArmConstants.PIVOT_OUT);
+            setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_OUT);
           } else {
             setArmPower(0);
           }
@@ -139,21 +136,21 @@ public class Pivot extends SubsystemBase {
   public Command runIntakePivotBumpCommand() {
     return run(
         () -> {
-          setTargetArmPosition(IntakeConstants.ArmConstants.PIVOT_BUMP);
+          setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_BUMP);
         });
   }
 
   public Command runIntakePivotInCommand() {
     return run(
         () -> {
-          setTargetArmPosition(IntakeConstants.ArmConstants.PIVOT_IN);
+          setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_IN);
         });
   }
 
   public Command IntakeSlightlyUpCommand() {
     return run(
         () -> {
-          setTargetArmPosition(IntakeConstants.ArmConstants.PIVOT_AGITATE);
+          setTargetArmPosition(RollerConstants.ArmConstants.PIVOT_AGITATE);
         });
   }
 
