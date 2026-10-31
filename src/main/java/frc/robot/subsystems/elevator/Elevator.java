@@ -20,19 +20,19 @@ public class Elevator extends SubsystemBase {
   private final SparkMax mElevatorLeader;
   private final SparkMax mElevatorFollower;
   private final AbsoluteEncoder mElevatorFollowerEncoder;
-  private final AbsoluteEncoder mPivotLeaderEncoder;
-  private final PIDController mPivotLeaderPID;
+  private final AbsoluteEncoder mElevatorLeaderEncoder;
+  private final PIDController mElevatorLeaderPID;
   private final PIDController mElevatorFollowerPID;
 
-  public double mPivotOutputPower = 0;
+  public double mElevatorOutputPower = 0;
   
-  private double mCurrentTarget = ElevatorConstants.PIVOT_IN;
+  private double mCurrentTarget = ElevatorConstants.Elevator_IN;
   private boolean mIntakeGroundSecondStage = false;
 
   public Elevator() {
-    mElevatorLeader = new SparkMax(ElevatorConstants.ARM_LEADER_ID, MotorType.kBrushless);
+    mElevatorLeader = new SparkMax(ElevatorConstants.ELEVATOR_LEADER_ID, MotorType.kBrushless);
     mElevatorFollower =
-        new SparkMax(ElevatorConstants.ARM_FOLLOWER_ID, MotorType.kBrushless);
+        new SparkMax(ElevatorConstants.ELEVATOR_FOLLOWER_ID, MotorType.kBrushless);
 
     // Applying configuration
     mElevatorLeader.configure(
@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     mElevatorFollowerEncoder = mElevatorFollower.getAbsoluteEncoder();
-    mPivotLeaderEncoder = mElevatorLeader.getAbsoluteEncoder();
+    mElevatorLeaderEncoder = mElevatorLeader.getAbsoluteEncoder();
 
     // PID constants for arm
     mElevatorFollowerPID =
@@ -54,38 +54,38 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ELEVATOR_KI,
             ElevatorConstants.ELEVATOR_KD);
 
-    mPivotLeaderPID =
+    mElevatorLeaderPID =
         new PIDController(
             ElevatorConstants.ELEVATOR_KP,
             ElevatorConstants.ELEVATOR_KI,
             ElevatorConstants.ELEVATOR_KD);
 
-    mPivotLeaderPID.setTolerance(ElevatorConstants.POSITION_TOLERANCE);
+    mElevatorLeaderPID.setTolerance(ElevatorConstants.POSITION_TOLERANCE);
     mElevatorFollowerPID.setTolerance(ElevatorConstants.POSITION_TOLERANCE);
   }
   // Methods
   /**
-   * Set the desired pivot position and drive the motors with the follower PID.
+   * Set the desired Elevator position and drive the motors with the follower PID.
    *
-   * @param position desired pivot position (encoder units)
+   * @param position desired Elevator position (encoder units)
    */
   public void setTargetArmPosition(double position) {
     mCurrentTarget = position;
-    // Use the field mPivotOutputPower (avoid shadowing a local variable)
-    mPivotOutputPower =
+    // Use the field mElevatorOutputPower (avoid shadowing a local variable)
+    mElevatorOutputPower =
         mElevatorFollowerPID.calculate(mElevatorFollowerEncoder.getPosition(), mCurrentTarget);
-    mElevatorFollower.set(mPivotOutputPower);
-    mElevatorLeader.set(mPivotOutputPower);
+    mElevatorFollower.set(mElevatorOutputPower);
+    mElevatorLeader.set(mElevatorOutputPower);
   }
 
   /**
-   * Set arm pivot motor power directly (open-loop).
+   * Set arm Elevator motor power directly (open-loop).
    *
-   * @param pivotPower motor power in range [-1.0, 1.0]
+   * @param ElevatorPower motor power in range [-1.0, 1.0]
    */
-  public void setArmPower(double pivotPower) {
-    mElevatorLeader.set(pivotPower);
-    mElevatorFollower.set(pivotPower);
+  public void setArmPower(double ElevatorPower) {
+    mElevatorLeader.set(ElevatorPower);
+    mElevatorFollower.set(ElevatorPower);
   }
 
   /**
@@ -103,13 +103,13 @@ public class Elevator extends SubsystemBase {
    * @return true if at setpoint
    */
   public boolean isAtTarget() {
-    return mPivotLeaderPID.atSetpoint();
+    return mElevatorLeaderPID.atSetpoint();
   }
 
   /** Stop the arm motors and hold current position by updating the target. */
   public void stopArm() {
     mElevatorLeader.set(0);
-    mCurrentTarget = mPivotLeaderEncoder.getPosition(); // Hold current spot
+    mCurrentTarget = mElevatorLeaderEncoder.getPosition(); // Hold current spot
   }
 
   /** Increase the internal KP tuning value by the configured increment. */
@@ -123,46 +123,46 @@ public class Elevator extends SubsystemBase {
         });
   }
 
-  public Command runIntakePivotGroundCommand() {
+  public Command runIntakeElevatorGroundCommand() {
     return run(
         () -> {
           if (getEncoderValue() < 0.7) {
-            setTargetArmPosition(ElevatorConstants.PIVOT_OUT);
+            setTargetArmPosition(ElevatorConstants.Elevator_OUT);
           } else {
             setArmPower(0);
           }
         });
   }
 
-  public Command runIntakePivotBumpCommand() {
+  public Command runIntakeElevatorBumpCommand() {
     return run(
         () -> {
-          setTargetArmPosition(ElevatorConstants.PIVOT_BUMP);
+          setTargetArmPosition(ElevatorConstants.Elevator_BUMP);
         });
   }
 
-  public Command runIntakePivotInCommand() {
+  public Command runIntakeElevatorInCommand() {
     return run(
         () -> {
-          setTargetArmPosition(ElevatorConstants.PIVOT_IN);
+          setTargetArmPosition(ElevatorConstants.Elevator_IN);
         });
   }
 
   public Command IntakeSlightlyUpCommand() {
     return run(
         () -> {
-          setTargetArmPosition(ElevatorConstants.PIVOT_AGITATE);
+          setTargetArmPosition(ElevatorConstants.Elevator_AGITATE);
         });
   }
 
-  public Command stopPivotCommand() {
+  public Command stopElevatorCommand() {
     return run(
         () -> {
           setArmPower(0.0);
         });
   }
 
-  public Command runPivotCommand() {
+  public Command runElevatorCommand() {
     return run(
         () -> {
           setArmPower(-0.2);
@@ -175,7 +175,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Arm/Pivot Encoder Value", getEncoderValue());
+    SmartDashboard.putNumber("Arm/Elevator Encoder Value", getEncoderValue());
     SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
   }
 }

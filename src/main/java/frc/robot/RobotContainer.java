@@ -161,7 +161,7 @@ public class RobotContainer {
 
     // Idle defaults so releasing a button returns mechanisms to a safe resting state instead of
     // holding their last commanded output.
-    elevator.setDefaultCommand(Commands.run(elevator::runIntakePivotGroundCommand, elevator));
+    elevator.setDefaultCommand(Commands.run(elevator::runIntakeElevatorGroundCommand, elevator));
     intake.setDefaultCommand(Commands.run(intake::stopIntake, intake));
     
 
@@ -228,19 +228,19 @@ public class RobotContainer {
             ShootCommands.autoAimAndShootCommand(
                 drive,
                 elevator,
-                pivot,
+                Elevator,
                 intake,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX()));
 */
-    // Hold to extend the pivot out and run the intake roller forward.
-    //driverController.leftTrigger(0.2).whileTrue(new IntakeDeployCommand(pivot, intake));
+    // Hold to extend the Elevator out and run the intake roller forward.
+    //driverController.leftTrigger(0.2).whileTrue(new IntakeDeployCommand(Elevator, intake));
 
     // Manual force-fire: spin up and feed immediately, bypassing the at-speed gate, for use if
     // the distance-based target RPM can't be trusted.
     //driverController.rightBumper().whileTrue(elevator.shootManualCommand());
 
-    //driverController.leftBumper().whileTrue(pivot.runIntakePivotBumpCommand());
+    //driverController.leftBumper().whileTrue(Elevator.runIntakeElevatorBumpCommand());
     // other intake button
     driverController.x().whileTrue(intake.runIntakeForwardCommand());
     driverController.b().onTrue(intake.runOuttakeCommand());
