@@ -19,11 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IntakeDeployCommand;
-import frc.robot.commands.ShootCommands;
 import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.elevator.*;
-import frc.robot.subsystems.roller.*;
 import frc.robot.subsystems.vision.*;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -40,8 +36,6 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  private final Elevator elevator;
-  private final Roller intake;
   
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -70,9 +64,6 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(camera0Name, drive::getRotation),
                 new VisionIOLimelight(camera1Name, drive::getRotation));
-
-        elevator = new Elevator();
-        intake = new Roller();
         
         break;
 
@@ -100,8 +91,6 @@ public class RobotContainer {
                     camera0Name, robotToCamera0, driveSimulation::getSimulatedDriveTrainPose),
                 new VisionIOPhotonVisionSim(
                     camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
-        intake = new Roller();
-        elevator = new Elevator();
         break;
 
       default:
@@ -116,8 +105,6 @@ public class RobotContainer {
                 (pose) -> {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         
-        intake = new Roller();
-        elevator = new Elevator();
         break;
     }
 
@@ -158,11 +145,6 @@ public class RobotContainer {
             () -> -driverController.getLeftY(),
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()));
-
-    // Idle defaults so releasing a button returns mechanisms to a safe resting state instead of
-    // holding their last commanded output.
-    elevator.setDefaultCommand(Commands.run(elevator::runIntakeElevatorGroundCommand, elevator));
-    intake.setDefaultCommand(Commands.run(intake::stopIntake, intake));
     
 
     // --- Reference: original AdvantageKit template bindings, superseded by the driver controls
@@ -242,8 +224,6 @@ public class RobotContainer {
 
     //driverController.leftBumper().whileTrue(Elevator.runIntakeElevatorBumpCommand());
     // other intake button
-    driverController.x().whileTrue(intake.runIntakeForwardCommand());
-    driverController.b().onTrue(intake.runOuttakeCommand());
     //driverController.y().whileTrue(elevator.toggleShooterCommand());
     //driverController.a().onTrue(elevator.toggleDistanceEstimationCommand());
 
