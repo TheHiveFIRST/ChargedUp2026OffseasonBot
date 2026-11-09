@@ -9,11 +9,13 @@ public final class ElevatorConstants {
     public static final double ELEVATOR_KI = 0.0;
     public static final double ELEVATOR_KD = 0.0;
     
-
+    // Elevator positions
     public static final double Elevator_OUT_MID = 0.73; // Need tuning
     public static final double Elevator_OUT_HIGH = 0.73; // Need tuning
     public static final double Elevator_IN_GROUND = 0.24; // Need tuning
     public static final double Elevator_IN_HUMAN = 0.24; // Need tuning
+
+    public static final double Elevator_RUN_SPEED = -0.2; // Need tuning
 
     public static final double POSITION_TOLERANCE = 0.1;
   }

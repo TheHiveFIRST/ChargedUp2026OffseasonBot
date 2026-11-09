@@ -13,8 +13,6 @@ public final class ElevatorConfig {
     elevatorLeaderConfig.smartCurrentLimit(50).idleMode(IdleMode.kCoast);
     // Follower configuration - set to follow Leader and invert
     elevatorFollowerConfig.inverted(true).smartCurrentLimit(50).idleMode(IdleMode.kCoast);
-
-    // Feeder/Kicker configuration
     
   }
 }

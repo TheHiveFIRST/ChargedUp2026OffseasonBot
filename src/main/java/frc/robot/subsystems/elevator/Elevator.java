@@ -25,7 +25,7 @@ public class Elevator extends SubsystemBase {
   private final PIDController mElevatorFollowerPID;
 
   public double mElevatorOutputPower = 0;
-  
+  // current target position for the elevator 
   private double mCurrentTarget = ElevatorConstants.Elevator_IN_HUMAN;
   private boolean mIntakeGroundSecondStage = false;
 
@@ -47,7 +47,7 @@ public class Elevator extends SubsystemBase {
     mElevatorFollowerEncoder = mElevatorFollower.getAbsoluteEncoder();
     mElevatorLeaderEncoder = mElevatorLeader.getAbsoluteEncoder();
 
-    // PID constants for arm
+    // PID constants for elevator control
     mElevatorFollowerPID =
         new PIDController(
             ElevatorConstants.ELEVATOR_KP,
@@ -112,11 +112,11 @@ public class Elevator extends SubsystemBase {
     mElevatorFollower.set(0);
     mCurrentTarget = mElevatorLeaderEncoder.getPosition(); // Hold current spot
   }
-
-  /** Increase the internal KP tuning value by the configured increment. */
   
 
   // Commands
+
+  // Command to move the elevator to a target position
   public Command IntakeToPositionCommand(double position) {
     return run(
         () -> {
@@ -124,6 +124,7 @@ public class Elevator extends SubsystemBase {
         });
   }
 
+  // Command to move the elevator to ground intaking position, controlled stop when the elevator reaches a certain height
   public Command runIntakeElevatorGroundCommand() {
     return run(
         () -> {
@@ -135,6 +136,7 @@ public class Elevator extends SubsystemBase {
         });
   }
 
+  // Command to move the elevator to human intaking position
   public Command runIntakeElevatorHumanCommand() {
     return run(
         () -> {
@@ -142,6 +144,7 @@ public class Elevator extends SubsystemBase {
         });
   }
 
+  // Command to move the elevator to mid outtaking position
   public Command runOutakeElevatorMidCommand() {
     return run(
         () -> {
@@ -149,6 +152,7 @@ public class Elevator extends SubsystemBase {
         });
   }
 
+  // Command to move the elevator to high outtaking position
   public Command runOutakeElevatorHighCommand() {
     return run(
         () -> {
@@ -163,10 +167,11 @@ public class Elevator extends SubsystemBase {
         });
   }
 
+  // Run elevator motors at set speed
   public Command runElevatorCommand() {
     return run(
         () -> {
-          setArmPower(-0.2);
+          setArmPower(ElevatorConstants.Elevator_RUN_SPEED);
         });
   }
 

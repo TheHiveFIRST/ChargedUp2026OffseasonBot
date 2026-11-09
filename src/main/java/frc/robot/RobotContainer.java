@@ -162,6 +162,7 @@ public class RobotContainer {
     // Idle defaults so releasing a button returns mechanisms to a safe resting state instead of
     // holding their last commanded output.
     elevator.setDefaultCommand(Commands.run(elevator::runIntakeElevatorGroundCommand, elevator));
+    // Default command to stop the intake when no other commands are running
     roller.setDefaultCommand(Commands.run(roller::stopIntake, roller));
     
 
@@ -218,50 +219,17 @@ public class RobotContainer {
     //             () -> -driverController.getLeftX(),
     //             () -> aimController.calculate(vision.getTargetX(0).getRadians())));
 
-    // DRIVER CONTROLS
-    // Hold to auto-aim the drivetrain at the hub and shoot continuously: RPM is recomputed every
-    // loop from live odometry distance, the kicker waits for isAtSpeed() before feeding, and the
-    // hopper feed transitions from a full-hopper agitation burst into half-hopper repeats.
-    /*driverController
-        .rightTrigger()
-        .whileTrue(
-            ShootCommands.autoAimAndShootCommand(
-                drive,
-                elevator,
-                Elevator,
-                intake,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX()));
-*/
-    // Hold to extend the Elevator out and run the intake roller forward.
-    //driverController.leftTrigger(0.2).whileTrue(new IntakeDeployCommand(Elevator, intake));
-
-    // Manual force-fire: spin up and feed immediately, bypassing the at-speed gate, for use if
-    // the distance-based target RPM can't be trusted.
-    //driverController.rightBumper().whileTrue(elevator.shootManualCommand());
-
-    //driverController.leftBumper().whileTrue(Elevator.runIntakeElevatorBumpCommand());
-    // other intake button
+    
+    // roller button bindings (for intaking/outtaking game pieces)
     driverController.x().whileTrue(roller.runIntakeForwardCommand());
     driverController.b().onTrue(roller.runOuttakeCommand());
-
-    //defult Elevator position is at GroundIntake position.
+    
+    // elevator button bindings (for moving the elevator to different positions)
+    //defult Elevator position is at GroundIntake position
     driverController.leftBumper().whileTrue(elevator.runIntakeElevatorHumanCommand());
     driverController.a().whileTrue(elevator.runOutakeElevatorMidCommand());
     driverController.b().whileTrue(elevator.runOutakeElevatorHighCommand());
     
-    //driverController.y().whileTrue(elevator.toggleShooterCommand());
-    //driverController.a().onTrue(elevator.toggleDistanceEstimationCommand());
-
-    // OPERATOR CONTROLS
-    //operatorController.y().whileTrue(elevator.toggleShooterCommand());
-    //operatorController.leftTrigger().onTrue(elevator.toggleKinematicsEstimationCommand());
-    //operatorController.rightTrigger().onTrue(elevator.setLadderShotCommand());
-    //operatorController.b().onTrue(elevator.setHubShotCommand());
-    //operatorController.a().onTrue(elevator.setTrenchShotCommand());
-    //operatorController.x().onTrue(elevator.toggleDistanceEstimationCommand());
-    //operatorController.rightBumper().onTrue(elevator.increaseShootingRPMOffsetCommand());
-    //operatorController.leftBumper().onTrue(elevator.decreaseShootingRPMOffsetCommand());
   }
 
   /**

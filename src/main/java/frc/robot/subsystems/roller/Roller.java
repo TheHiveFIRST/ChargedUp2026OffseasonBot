@@ -13,8 +13,10 @@ public class Roller extends SubsystemBase {
 
   // TODO: ADD comments
   public Roller() {
-    mRollerMotor = new SparkFlex(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
+    // Creats a new SparkFlex motor controller for the roller motor
+    mRollerMotor = new SparkFlex(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless); 
 
+    // Applies the configuration to the roller motor
     mRollerMotor.configure(
         RollerConfig.rollerMotorConfig,
         ResetMode.kResetSafeParameters,
@@ -26,19 +28,24 @@ public class Roller extends SubsystemBase {
     runIntake(0.0);
   }
 
+  // Runs the intake at a target speed
   public void runIntake(double speed) {
     mRollerMotor.set(speed);
   }
 
   // Command factories
+
+  // Runs the roller at full speed to intake a game piece
   public Command runIntakeForwardCommand() {
     return Commands.run(() -> runIntake(RollerConstants.INTAKE_SPEED), this);
   }
 
+  // Runs the roller at a slower speed to intake a game piece
   public Command runIntakeSlowCommand() {
     return Commands.run(() -> runIntake(RollerConstants.SLOW_INTAKE_SPEED), this);
   }
 
+  // Runs the roller in reverse to outtake a game piece
   public Command runOuttakeCommand() {
     return Commands.run(() -> runIntake(RollerConstants.OUTTAKE_SPEED), this);
   }
