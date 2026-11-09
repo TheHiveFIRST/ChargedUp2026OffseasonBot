@@ -10,13 +10,10 @@ public final class ElevatorConstants {
     public static final double ELEVATOR_KD = 0.0;
     
 
-    public static final double Elevator_OUT = 0.73;
-    public static final double Elevator_BUMP = 0.45;
-    public static final double Elevator_AGITATE = 0.65;
-    public static final double Elevator_AGITATE55 = 0.55;
-    public static final double Elevator_AGITATE45 = 0.45;
-    public static final double Elevator_AGITATE35 = 0.35;
-    public static final double Elevator_IN = 0.24;
+    public static final double Elevator_OUT_MID = 0.73; // Need tuning
+    public static final double Elevator_OUT_HIGH = 0.73; // Need tuning
+    public static final double Elevator_IN_GROUND = 0.24; // Need tuning
+    public static final double Elevator_IN_HUMAN = 0.24; // Need tuning
 
     public static final double POSITION_TOLERANCE = 0.1;
   }

@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
 
   public double mElevatorOutputPower = 0;
   
-  private double mCurrentTarget = ElevatorConstants.Elevator_IN;
+  private double mCurrentTarget = ElevatorConstants.Elevator_IN_HUMAN;
   private boolean mIntakeGroundSecondStage = false;
 
   public Elevator() {
@@ -109,6 +109,7 @@ public class Elevator extends SubsystemBase {
   /** Stop the arm motors and hold current position by updating the target. */
   public void stopArm() {
     mElevatorLeader.set(0);
+    mElevatorFollower.set(0);
     mCurrentTarget = mElevatorLeaderEncoder.getPosition(); // Hold current spot
   }
 
@@ -127,31 +128,31 @@ public class Elevator extends SubsystemBase {
     return run(
         () -> {
           if (getEncoderValue() < 0.7) {
-            setTargetArmPosition(ElevatorConstants.Elevator_OUT);
+            setTargetArmPosition(ElevatorConstants.Elevator_IN_GROUND);
           } else {
             setArmPower(0);
           }
         });
   }
 
-  public Command runIntakeElevatorBumpCommand() {
+  public Command runIntakeElevatorHumanCommand() {
     return run(
         () -> {
-          setTargetArmPosition(ElevatorConstants.Elevator_BUMP);
+          setTargetArmPosition(ElevatorConstants.Elevator_IN_HUMAN);
         });
   }
 
-  public Command runIntakeElevatorInCommand() {
+  public Command runOutakeElevatorMidCommand() {
     return run(
         () -> {
-          setTargetArmPosition(ElevatorConstants.Elevator_IN);
+          setTargetArmPosition(ElevatorConstants.Elevator_OUT_MID);
         });
   }
 
-  public Command IntakeSlightlyUpCommand() {
+  public Command runOutakeElevatorHighCommand() {
     return run(
         () -> {
-          setTargetArmPosition(ElevatorConstants.Elevator_AGITATE);
+          setTargetArmPosition(ElevatorConstants.Elevator_OUT_HIGH);
         });
   }
 

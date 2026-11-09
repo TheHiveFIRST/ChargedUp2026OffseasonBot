@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Roller extends SubsystemBase {
-  private final SparkFlex mIntakeMotor;
+  private final SparkFlex mRollerMotor;
 
   // TODO: ADD comments
   public Roller() {
-    mIntakeMotor = new SparkFlex(RollerConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+    mRollerMotor = new SparkFlex(RollerConstants.ROLLER_MOTOR_ID, MotorType.kBrushless);
 
-    mIntakeMotor.configure(
-        RollerConfig.intakeMotorConfig,
+    mRollerMotor.configure(
+        RollerConfig.rollerMotorConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -27,7 +27,7 @@ public class Roller extends SubsystemBase {
   }
 
   public void runIntake(double speed) {
-    mIntakeMotor.set(speed);
+    mRollerMotor.set(speed);
   }
 
   // Command factories
@@ -49,6 +49,6 @@ public class Roller extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // EX: SmartDashboard.putNumber("Intake/AppliedVolts", mIntakeMotor.getAppliedOutput());
+    // EX: SmartDashboard.putNumber("Intake/AppliedVolts", mRollerMotor.getAppliedOutput());
   }
 }

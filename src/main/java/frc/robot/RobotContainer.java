@@ -41,7 +41,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   private final Elevator elevator;
-  private final Roller intake;
+  private final Roller roller;
   
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -72,7 +72,7 @@ public class RobotContainer {
                 new VisionIOLimelight(camera1Name, drive::getRotation));
 
         elevator = new Elevator();
-        intake = new Roller();
+        roller = new Roller();
         
         break;
 
@@ -100,7 +100,7 @@ public class RobotContainer {
                     camera0Name, robotToCamera0, driveSimulation::getSimulatedDriveTrainPose),
                 new VisionIOPhotonVisionSim(
                     camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
-        intake = new Roller();
+        roller = new Roller();
         elevator = new Elevator();
         break;
 
@@ -116,7 +116,7 @@ public class RobotContainer {
                 (pose) -> {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         
-        intake = new Roller();
+        roller = new Roller();
         elevator = new Elevator();
         break;
     }
@@ -162,7 +162,7 @@ public class RobotContainer {
     // Idle defaults so releasing a button returns mechanisms to a safe resting state instead of
     // holding their last commanded output.
     elevator.setDefaultCommand(Commands.run(elevator::runIntakeElevatorGroundCommand, elevator));
-    intake.setDefaultCommand(Commands.run(intake::stopIntake, intake));
+    roller.setDefaultCommand(Commands.run(roller::stopIntake, roller));
     
 
     // --- Reference: original AdvantageKit template bindings, superseded by the driver controls
@@ -242,8 +242,14 @@ public class RobotContainer {
 
     //driverController.leftBumper().whileTrue(Elevator.runIntakeElevatorBumpCommand());
     // other intake button
-    driverController.x().whileTrue(intake.runIntakeForwardCommand());
-    driverController.b().onTrue(intake.runOuttakeCommand());
+    driverController.x().whileTrue(roller.runIntakeForwardCommand());
+    driverController.b().onTrue(roller.runOuttakeCommand());
+
+    //defult Elevator position is at GroundIntake position.
+    driverController.leftBumper().whileTrue(elevator.runIntakeElevatorHumanCommand());
+    driverController.a().whileTrue(elevator.runOutakeElevatorMidCommand());
+    driverController.b().whileTrue(elevator.runOutakeElevatorHighCommand());
+    
     //driverController.y().whileTrue(elevator.toggleShooterCommand());
     //driverController.a().onTrue(elevator.toggleDistanceEstimationCommand());
 
