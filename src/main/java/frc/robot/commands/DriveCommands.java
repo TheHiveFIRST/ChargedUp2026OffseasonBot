@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -150,6 +151,73 @@ public class DriveCommands {
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
+
+  public static Command driveToPosCartesian(
+      Drive drive,
+      Pose2d targetPos) {
+
+    // Create PID controller
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+    PIDController XController = new PIDController(1, 0, 0);
+    PIDController YController = new PIDController(1, 0, 0);
+        
+    double xTarget = targetPos.getX();
+    double yTarget = targetPos.getY();
+
+    // Construct command
+    return Commands.run(
+            () -> {
+            // update pose
+            Pose2d botPose = drive.getPose(); 
+
+            //get the error in each axis
+            double Xdistance = botPose.getX() - targetPos.getX();
+            double Ydistance = botPose.getY() - targetPos.getY();
+
+            //get the PID output for each axis - This is what the robot will recieve
+            double Xoutput = XController.calculate(Xdistance, xTarget);
+            double Youtput = YController.calculate(Ydistance, yTarget);
+              // Get linear velocity
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(Xoutput, Youtput);
+
+              // Calculate angular speed
+              double omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), targetPos.getRotation().getRadians());
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      omega);
+              boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive)
+
+        // Reset PID controllers when command starts
+        .beforeStarting(() -> {
+          angleController.reset(drive.getRotation().getRadians());
+          });
+  }
+  
+
+  
 
   /**
    * Measures the velocity feedforward constants for the drive motors.

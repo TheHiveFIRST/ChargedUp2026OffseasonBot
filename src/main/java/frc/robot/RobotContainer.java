@@ -207,6 +207,8 @@ public class RobotContainer {
 
     driverController.start().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
+    //driverController.y().whileTrue(DriveCommands.driveToPosCartesian(drive, new Pose2d()));
+
     // // Auto aim command example
     // PIDController aimController = new PIDController(0.2, 0.0, 0.0);
     // aimController.enableContinuousInput(-Math.PI, Math.PI);
