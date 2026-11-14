@@ -25,6 +25,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+
+import static frc.robot.subsystems.drive.DriveConstants.TRANSLATION_KD;
+import static frc.robot.subsystems.drive.DriveConstants.TRANSLATION_KP;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -164,8 +168,8 @@ public class DriveCommands {
             ANGLE_KD,
             new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
-    PIDController XController = new PIDController(1, 0, 0);
-    PIDController YController = new PIDController(1, 0, 0);
+    PIDController XController = new PIDController(TRANSLATION_KP, 0, TRANSLATION_KD);
+    PIDController YController = new PIDController(TRANSLATION_KP, 0, TRANSLATION_KD);
         
     double xTarget = targetPos.getX();
     double yTarget = targetPos.getY();

@@ -11,6 +11,8 @@ import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -100,6 +102,10 @@ public class DriveConstants {
   public static final double turnPIDMinInput = 0; // Radians
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
+  //translational autoalign PID configuration
+  public static final double TRANSLATION_KP = 1.0;
+  public static final double TRANSLATION_KD = 0;
+
   // PathPlanner configuration
   public static final double robotMassKg = 74.088;
   public static final double robotMOI = 6.883;
@@ -151,4 +157,6 @@ public class DriveConstants {
   public static final Pose3d redFerryPoseOutpost = new Pose3d(14.3, 2, 0, Rotation3d.kZero);
   public static final Pose3d blueFerryPoseDepot = new Pose3d(2.1, 2, 0, Rotation3d.kZero);
   public static final Pose3d blueFerryPoseOutpost = new Pose3d(2.1, 6, 0, Rotation3d.kZero);
+
+  public static final Pose2d testPose = new Pose2d(0, 0, Rotation2d.kZero);
 }

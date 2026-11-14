@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.drive.DriveConstants.testPose;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -207,7 +208,7 @@ public class RobotContainer {
 
     driverController.start().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-    //driverController.y().whileTrue(DriveCommands.driveToPosCartesian(drive, new Pose2d()));
+    driverController.y().whileTrue(DriveCommands.driveToPosCartesian(drive, testPose));
 
     // // Auto aim command example
     // PIDController aimController = new PIDController(0.2, 0.0, 0.0);
