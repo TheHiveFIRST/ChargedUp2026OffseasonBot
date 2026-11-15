@@ -181,15 +181,14 @@ public class DriveCommands {
             Pose2d botPose = drive.getPose(); 
 
             //get the error in each axis
-            double Xdistance = botPose.getX() - targetPos.getX();
-            double Ydistance = botPose.getY() - targetPos.getY();
+            
 
             //get the PID output for each axis - This is what the robot will recieve
-            double Xoutput = XController.calculate(Xdistance, xTarget);
-            double Youtput = YController.calculate(Ydistance, yTarget);
+            double Xoutput = XController.calculate(botPose.getX(), xTarget);
+            double Youtput = YController.calculate(botPose.getY(), yTarget);
               // Get linear velocity
-              Translation2d linearVelocity =
-                  getLinearVelocityFromJoysticks(Xoutput, Youtput);
+              Translation2d linearVelocity = 
+                new Translation2d(Xoutput, Youtput);
 
               // Calculate angular speed
               double omega =
@@ -217,8 +216,12 @@ public class DriveCommands {
         // Reset PID controllers when command starts
         .beforeStarting(() -> {
           angleController.reset(drive.getRotation().getRadians());
+          XController.reset();
+          YController.reset();
           });
   }
+
+  
   
 
   
